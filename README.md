@@ -1,4 +1,4 @@
-﻿# qcp-lib-typescript
+# qcp-lib-typescript
 
 **QCP 官方 TypeScript 库** — 新时代 UDP 可靠协议 · 游戏 / IoT · 0-GC 热路径
 
