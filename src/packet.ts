@@ -45,10 +45,10 @@ export function unmarshal(data: Uint8Array): Packet | null {
   if (data.length < HEADER_SIZE + CRC_SIZE) return null;
   const payloadOffset = HEADER_SIZE + CRC_SIZE;
   const stored =
-    data[5] | (data[6] << 8) | (data[7] << 16) | (data[8] << 24);
+    (data[5] | (data[6] << 8) | (data[7] << 16) | (data[8] << 24)) >>> 0;
   const payload = data.subarray(payloadOffset);
   const actual = crc32(payload);
-  if (stored !== actual >>> 0) return null;
+  if (stored !== (actual >>> 0)) return null;
   return {
     type: data[0] & 0x0f,
     stream: (data[0] >> 4) & 0x0f,

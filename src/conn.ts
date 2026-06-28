@@ -24,6 +24,7 @@ export class QCPConn {
   private sendBuf = acquireBuf();
   private connected = true;
   private recvWaiters: Array<(data: Uint8Array | null) => void> = [];
+  private retransmitTimer: NodeJS.Timeout;
 
   private constructor(
     socket: dgram.Socket,
@@ -33,7 +34,7 @@ export class QCPConn {
     this.remote = remote;
     this.replyHost = remote.host;
     this.socket.on("message", (msg, rinfo) => this.onMessage(msg, rinfo));
-    setInterval(() => {
+    this.retransmitTimer = setInterval(() => {
       for (const raw of this.arq.retransmits()) {
         this.socket.send(raw, this.remote.port, this.remote.host);
       }
@@ -141,6 +142,8 @@ export class QCPConn {
   close(): void {
     this.connected = false;
     this.arq.release();
+    clearInterval(this.retransmitTimer);
+    releaseBuf(this.sendBuf);
     this.socket.close();
   }
 
@@ -213,3 +216,10 @@ export class QCPConn {
 
 export { STREAM_REALTIME, STREAM_BATCH, STREAM_CRITICAL } from "./constants.js";
 export type { ARQConfig, NetProfile } from "./constants.js";
+
+export function shouldAcceptRealtimeUpdate(
+  lastRealtime: number,
+  seqId: number
+): boolean {
+  return seqId >= lastRealtime;
+}
