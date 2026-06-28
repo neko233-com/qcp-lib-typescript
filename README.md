@@ -1,26 +1,36 @@
 ﻿# qcp-lib-typescript
 
-QCP typescript binding - 2026 reliable UDP protocol
+**QCP 官方 TypeScript 库** — 新时代 UDP 可靠协议 · 游戏 / IoT · 0-GC 热路径
 
-## Features
+Go（`qcp-lib-go`）为规范参考实现；本库与其 API 对齐，TypedArray 缓冲池实现热路径零分配。
 
-- FEC-First reliability (Forward Error Correction)
-- Zero-Copy Ring Buffer
-- Lock-Free queues
-- 3-channel priority system
-- 10-byte header (vs KCP 24 bytes)
+## Install
 
-## Installation
+```bash
+npm install @neko233/qcp
+```
 
-See README in each language directory.
+## Quick Start
 
-## Protocol
+```typescript
+import { QCPConn, STREAM_REALTIME } from "@neko233/qcp";
 
-QCP uses FEC instead of ARQ for reliability:
-- FEC provides instant recovery (no retransmission delay)
-- ARQ only as fallback (rare cases)
-- More reliable than KCP
+const ln = await QCPConn.listen(9000);
+const conn = await ln.accept();
+conn.setStream(STREAM_REALTIME);
+
+const client = await QCPConn.dial("127.0.0.1", 9000);
+client.setStream(STREAM_REALTIME);
+client.send(new TextEncoder().encode("ping"));
+const resp = await client.recvWait(2000);
+```
+
+## Verify (QCP vs KCP all scenarios)
+
+```bash
+npm test
+```
 
 ## License
 
-MIT License
+MIT

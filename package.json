@@ -1,0 +1,19 @@
+{
+  "name": "@neko233/qcp",
+  "version": "0.1.0",
+  "description": "QCP — 新时代 UDP 可靠协议 TypeScript 官方库",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node --experimental-vm-modules node_modules/vitest/vitest.mjs run",
+    "verify": "node --experimental-vm-modules node_modules/vitest/vitest.mjs run tests/bench.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "MIT"
+}
